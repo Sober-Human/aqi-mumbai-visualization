@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mumbai AQI Project - Home</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="logo">AQI Mumbai</div>
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="about.html" class="nav-link">About</a>
+    </aside>
+
+    <button class="sidebar-toggle" id="sidebar-toggle">&#9776;</button>
+
+    <main class="main-content" id="main-content">
+        <div class="container">
+            <h1>Data Visualization of Mumbai's Air Quality (2023-2025)</h1>
+            <p>This project, submitted as part of the B.Sc. Computer Science curriculum, analyzes three years of air quality data for Mumbai. The goal is to identify trends, seasonal patterns, and the primary pollutants affecting the city's environment.</p>
+            
+            <h2>Project Overview</h2>
+            <p>Using public data from the Central Pollution Control Board (CPCB), we have processed and visualized key metrics to tell a story about the air we breathe. The full set of interactive visualizations can be found on the Dashboard page.</p>
+
+            <div class="chart-card">
+                 <img src="images/3yr_monthly_avg_aqi.png" alt="3 Year AQI Comparison" style="width:100%; border-radius: 8px;">
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const toggleButton = document.getElementById('sidebar-toggle');
+        const sidebar = document.getElementById('sidebar');
+        const mainContent = document.getElementById('main-content');
+
+        toggleButton.addEventListener('click', () => {
+            sidebar.classList.toggle('sidebar-collapsed');
+            mainContent.classList.toggle('main-content-expanded');
+            toggleButton.classList.toggle('toggle-collapsed');
+        });
+    </script>
+
+</body>
+</html>

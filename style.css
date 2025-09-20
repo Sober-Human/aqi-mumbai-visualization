@@ -1,0 +1,114 @@
+/* Google Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+/* Basic Resets and Body Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f0f2f5;
+    color: #333;
+    display: flex;
+    overflow-x: hidden; /* Prevents horizontal scrollbar during animation */
+}
+
+/* Sidebar Navigation */
+.sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    color: #ecf0f1;
+    height: 100vh;
+    position: fixed;
+    padding: 1.5rem;
+    transition: margin-left 0.4s ease; /* NEW: Smooth transition for collapsing */
+}
+
+/* --- NEW: Styles for Collapsible Sidebar --- */
+.sidebar.sidebar-collapsed {
+    margin-left: -250px;
+}
+
+.sidebar .logo {
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.sidebar .nav-link {
+    display: block;
+    color: #ecf0f1;
+    text-decoration: none;
+    padding: 1rem;
+    margin: 0.5rem 0;
+    border-radius: 8px;
+    transition: background-color 0.3s;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #34495e;
+}
+
+.sidebar .nav-link.active {
+    background-color: #3498db;
+    font-weight: 500;
+}
+
+/* Main Content Area */
+.main-content {
+    margin-left: 250px; /* Default margin */
+    padding: 2rem 3rem;
+    width: calc(100% - 250px);
+    transition: margin-left 0.4s ease, width 0.4s ease; /* NEW: Smooth transition */
+}
+
+/* --- NEW: Expanded state for main content when sidebar is hidden --- */
+.main-content.main-content-expanded {
+    margin-left: 0;
+    width: 100%;
+}
+
+/* --- NEW: Sidebar Toggle Button --- */
+.sidebar-toggle {
+    position: fixed;
+    top: 20px;
+    left: 270px; /* Initially next to the sidebar */
+    font-size: 1.5rem;
+    background: #fff;
+    border: none;
+    padding: 0.5rem 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    z-index: 1000;
+    transition: left 0.4s ease; /* NEW: Smooth transition */
+}
+
+.sidebar-toggle.toggle-collapsed {
+    left: 20px; /* Position when sidebar is hidden */
+}
+
+
+/* --- Other Styles (Unchanged) --- */
+.container { max-width: 1400px; }
+h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+h2 { font-size: 1.8rem; margin-bottom: 1rem; border-bottom: 2px solid #ddd; padding-bottom: 0.5rem; }
+p { line-height: 1.6; margin-bottom: 1rem; }
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.chart-card {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+}

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Mumbai AQI - Dashboard (Static Charts)</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      /* minimal safety styling so canvas sizes behave */
+      .dashboard-grid { display:flex; gap:16px; flex-wrap:wrap; }
+      .chart-card { flex:1 1 480px; min-width:320px; background:#fff; padding:12px; border-radius:8px; box-shadow:0 1px 4px rgba(0,0,0,0.06); }
+      canvas { width:100% !important; height:320px !important; }
+    </style>
+</head>
+<body>
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">AQI Mumbai</div>
+    <a href="index.html" class="nav-link">Home</a>
+    <a href="dashboard.html" class="nav-link active">Dashboard</a>
+    <a href="about.html" class="nav-link">About</a>
+  </aside>
+
+  <button class="sidebar-toggle" id="sidebar-toggle">&#9776;</button>
+
+  <main class="main-content" id="main-content">
+    <div class="container">
+      <h1>Interactive Dashboard (Now: Static)</h1>
+      <p>Charts below are rendered as static images — no hover, no animation, no clicks.</p>
+
+      <div class="dashboard-grid">
+        <div class="chart-card">
+          <canvas id="annualAvgChart"></canvas>
+        </div>
+        <div class="chart-card">
+          <canvas id="monthlyAvgChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // ---------- STATIC CHART CONFIG (no animations, no events, no tooltips) ----------
+    const chartBaseOptions = {
+      animation: false,
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        tooltip: { enabled: false },
+        legend: { display: true }
+      },
+      // `events: []` disables mouse/touch events for the chart (no interactivity)
+      events: []
+    };
+
+    // ---------- ANNUAL AVERAGE (static bar) ----------
+    (function(){
+      const ctx = document.getElementById('annualAvgChart').getContext('2d');
+      const data = {
+        labels: ['2023','2024','2025'],
+        datasets: [{
+          label: 'Average Annual AQI',
+          data: [119.8, 91.2, 121.5], // replace with real values
+          backgroundColor: ['#ff6384','#36a2eb','#4bc0c0'],
+          borderWidth: 1
+        }]
+      };
+      new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: Object.assign({}, chartBaseOptions, {
+          plugins: {
+            tooltip: { enabled: false },
+            legend: { display: false },
+            title: { display: true, text: 'Overall Annual Average AQI' }
+          },
+          scales: { 
+            y: { 
+              beginAtZero: false, 
+              min: 50,      // <-- set minimum value for y-axis
+              max: 130,     // <-- set maximum value for y-axis
+              title: { display: true, text: 'Average AQI' } 
+            } 
+          }
+        })
+      });
+    })();
+
+    // ---------- 3-YEAR MONTHLY COMPARISON (static grouped bars) ----------
+    (function(){
+      const ctx = document.getElementById('monthlyAvgChart').getContext('2d');
+      const data = {
+        labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+        datasets: [
+          { label: '2023', data: [203,193,147,105,81,80,72,63,67,145,141,144], backgroundColor:'#ff6384' },
+          { label: '2024', data: [117,123,98,99,75,53,45,43,48,84,153,157], backgroundColor:'#36a2eb' },
+          { label: '2025', data: [137,123,107,0,0,0,0,0,0,0,0,0], backgroundColor:'#4bc0c0' }
+        ]
+      };
+      new Chart(ctx, {
+        type: 'bar',
+        data: data,
+        options: Object.assign({}, chartBaseOptions, {
+          plugins: {
+            tooltip: { enabled: false },
+            legend: { display: true, position: 'top' },
+            title: { display: true, text: '3-Year Comparative Monthly Average AQI' }
+          },
+          scales: { y: { beginAtZero: true, title: { display: true, text: 'Average AQI' } } }
+        })
+      });
+    })();
+  </script>
+
+  <script>
+    // sidebar toggle (kept unchanged)
+    const toggleButton = document.getElementById('sidebar-toggle');
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.ge
