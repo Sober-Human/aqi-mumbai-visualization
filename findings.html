@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Findings — AQI Mumbai</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <h1 class="brand"><a href="index.html">AQI Mumbai</a></h1>
+      <nav class="main-nav">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="findings.html" class="nav-link active">Findings</a>
+        <a href="about.html" class="nav-link">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="card">
+      <h2>Key findings — snapshot</h2>
+      <div class="findings-grid">
+        <div class="finding highlight">
+          <h3>Annual AQI (avg)</h3>
+          <p><strong>2023:</strong> <span id="f-2023">--</span></p>
+          <p><strong>2024:</strong> <span id="f-2024">--</span></p>
+          <p><strong>2025 (partial):</strong> <span id="f-2025">--</span></p>
+        </div>
+
+        <div class="finding">
+          <h3>Seasonal spike</h3>
+          <p>Winter months (Nov–Jan) show the highest median AQI — likely due to weather + emissions. Consider targeted advisories.</p>
+        </div>
+
+        <div class="finding">
+            <h3>Top pollutants (major)</h3>
+            <p style="margin:6px 0 0 0; font-weight:600;">Ozone · PM2.5 · PM10</p>
+            <p style="margin-top:8px;">These are the three dominant pollutants identified.</p>
+        </div>
+
+
+        <div class="finding actions">
+          <h3>Recommendations</h3>
+          <ol>
+            <li><strong>Advisories:</strong> Publish daily AQI alerts in winter months.</li>
+            <li><strong>Dust control:</strong> Cover construction sites and enforce sprinkling on dry roads.</li>
+            <li><strong>Transport:</strong> Promote off-peak freight timing and EV public transport pilots.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container"><small>Prepared by students. Data: CPCB.</small></div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script>
+    // populate basic stats for findings page
+    Papa.parse('data/cleaned_aqi.csv', { download:true, header:true, skipEmptyLines:true,
+      complete:function(res){
+        if(!res || !res.data) return;
+        const rows = res.data.filter(r=>r.AQI && r.AQI!=='');
+        // mean per year
+        const groups = {};
+        rows.forEach(r => {
+          const y = r.Year || (new Date(r.Date)).getFullYear();
+          groups[y] = groups[y] || []; groups[y].push(Number(r.AQI));
+        });
+        ['2023','2024','2025'].forEach(y=>{
+          if(groups[y]) document.getElementById('f-'+y).textContent = (groups[y].reduce((s,x)=>s+x,0)/groups[y].length).toFixed(1);
+        });
+        // pollutants
+        const pollCol = ['ProminentPollutant','Pollutant','Prominent','Dominant'].find(c => res.meta && res.meta.fields && res.meta.fields.includes(c));
+        let ozone=0,pm25=0,pm10=0;
+        if(pollCol){
+          rows.forEach(r=>{
+            const v=(r[pollCol]||'').toString().toLowerCase();
+            if(v.includes('ozone') || v.includes('o3')) ozone++;
+            if(v.includes('pm2') || v.includes('pm2.5') || v.includes('pm25')) pm25++;
+            if(v.includes('pm10')) pm10++;
+          });
+        }
+        document.getElementById('f-pm25').textContent = pm25 || '0';
+        document.getElementById('f-pm10').textContent = pm10 || '0';
+        document.getElementById('f-ozone').textContent = ozone || '0';
+      }
+    });
+  </script>
+</body>
+</html>

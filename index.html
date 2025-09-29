@@ -1,46 +1,168 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Mumbai AQI Project - Home</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <title>AQI Mumbai — Project</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <aside class="sidebar" id="sidebar">
-        <div class="logo">AQI Mumbai</div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <h1 class="brand">AQI Mumbai — Project</h1>
+      <nav class="main-nav">
         <a href="index.html" class="nav-link active">Home</a>
         <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="findings.html" class="nav-link">Findings</a>
         <a href="about.html" class="nav-link">About</a>
-    </aside>
+      </nav>
+    </div>
+  </header>
 
-    <button class="sidebar-toggle" id="sidebar-toggle">&#9776;</button>
+<main class="container">
+  <section class="hero card">
+    <div class="card-inner">
+      <h2>Daily AQI analysis — Mumbai (2023–2025)</h2>
+      <p>Interactive visualizations, summary findings, and clean data-powered insights. Source: CPCB.</p>
+      <div class="cta-row">
+        <a href="dashboard.html" class="btn primary">Open Dashboard</a>
+      </div>
+    </div>
+  </section>
 
-    <main class="main-content" id="main-content">
-        <div class="container">
-            <h1>Data Visualization of Mumbai's Air Quality (2023-2025)</h1>
-            <p>This project, submitted as part of the B.Sc. Computer Science curriculum, analyzes three years of air quality data for Mumbai. The goal is to identify trends, seasonal patterns, and the primary pollutants affecting the city's environment.</p>
-            
-            <h2>Project Overview</h2>
-            <p>Using public data from the Central Pollution Control Board (CPCB), we have processed and visualized key metrics to tell a story about the air we breathe. The full set of interactive visualizations can be found on the Dashboard page.</p>
+  <section class="kpi-row">
+    <div class="kpi card">
+      <div class="kpi-number" id="kpi-days">--</div>
+      <div class="kpi-label">Days analyzed</div>
+    </div>
 
-            <div class="chart-card">
-                 <img src="images/3yr_monthly_avg_aqi.png" alt="3 Year AQI Comparison" style="width:100%; border-radius: 8px;">
-            </div>
+    <div class="kpi card">
+      <div class="kpi-number" id="kpi-high">--</div>
+      <div class="kpi-label">% days AQI &gt; 200</div>
+    </div>
+
+    <div class="kpi card">
+      <div class="kpi-number" id="kpi-top-pollutant">
+        <div style="font-weight:700; font-size:16px;">Major pollutants</div>
+        <div style="font-weight:550; margin-top:6px; font-size:14px; line-height:1.25;">
+          Ozone<br>
+          PM2.5<br>
+          PM10
         </div>
-    </main>
+      </div>
+  </section>
 
-    <script>
-        const toggleButton = document.getElementById('sidebar-toggle');
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('main-content');
+  <!-- Average AQI over the three years -->
+  <section class="card">
+    <div class="card-inner">
+      <h3>Average AQI — 2023 / 2024 / 2025 (partial)</h3>
+      <div class="avg-row">
+        <div class="avg-box">
+          <div class="avg-label">2023 (avg)</div>
+          <div id="avg-2023" class="avg-value">--</div>
+        </div>
+        <div class="avg-box">
+          <div class="avg-label">2024 (avg)</div>
+          <div id="avg-2024" class="avg-value">--</div>
+        </div>
+        <div class="avg-box">
+          <div class="avg-label">2025 (partial)</div>
+          <div id="avg-2025" class="avg-value">--</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        toggleButton.addEventListener('click', () => {
-            sidebar.classList.toggle('sidebar-collapsed');
-            mainContent.classList.toggle('main-content-expanded');
-            toggleButton.classList.toggle('toggle-collapsed');
-        });
-    </script>
+  <!-- AQI category image (static) -->
+  <section class="card">
+    <div class="card-inner">
+      <h3>AQI Category Overview</h3>
+      <p style="color:var(--muted);margin-top:6px;">Distribution of days by AQI category (Good — Severe).</p>
+      <div style="margin-top:12px;">
+        <img src="images/air_quality_index.png" alt="AQI category distribution" style="max-width:100%;border-radius:8px;box-shadow:0 6px 18px rgba(2,6,23,0.04);">
+        <noscript>
+          <p>Category distribution image not shown. Please enable JavaScript or check images/air_quality_index.png</p>
+        </noscript>
+      </div>
+    </div>
+  </section>
+</main>
 
+<!-- Defensive JS to populate days, %>200, and annual averages if data exists -->
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+<script>
+  (function(){
+    Papa.parse('data/cleaned_aqi.csv', {
+      download: true, header: true, skipEmptyLines: true,
+      complete: function(res){
+        try {
+          if(!res || !res.data || res.data.length===0) return;
+          const rows = res.data.filter(r => r.AQI !== undefined && r.AQI !== '' && !isNaN(Number(r.AQI)));
+          // Days analyzed
+          document.getElementById('kpi-days').textContent = rows.length || '--';
+          // % days AQI > 200
+          const high = rows.filter(r => Number(r.AQI) > 200).length;
+          document.getElementById('kpi-high').textContent = rows.length ? ((high/rows.length)*100).toFixed(1) + '%' : '--';
+          // annual averages
+          const byYear = {};
+          rows.forEach(r => {
+            const y = r.Year || (new Date(r.Date)).getFullYear();
+            byYear[y] = byYear[y] || [];
+            byYear[y].push(Number(r.AQI));
+          });
+          ['2023','2024','2025'].forEach(y => {
+            const el = document.getElementById('avg-' + y);
+            if(el){
+              if(byYear[y] && byYear[y].length){
+                const avg = (byYear[y].reduce((s,x)=>s+x,0)/byYear[y].length).toFixed(1);
+                el.textContent = avg;
+              } else {
+                el.textContent = '--';
+              }
+            }
+          });
+        } catch(e){
+          console.warn('Home KPI parse error', e);
+        }
+      },
+      error: function(){ /* keep placeholders */ }
+    });
+  })();
+</script>
+
+  <footer class="site-footer">
+    <div class="container">
+      <small>Data source: Central Pollution Control Board (CPCB). Project: Student fieldwork.</small>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script>
+    // Populate KPIs: days + ozone, pm2.5, pm10 counts (non-blocking)
+    Papa.parse('data/cleaned_aqi.csv', {
+      download:true, header:true, skipEmptyLines:true,
+      complete: function(res){
+        try{
+          if(!res || !res.data) return;
+          const rows = res.data.filter(r => r.AQI && r.AQI !== '');
+          document.getElementById('kpi-days').textContent = rows.length;
+          const pollCol = ['ProminentPollutant','Pollutant','Prominent','Dominant'].find(c => res.meta && res.meta.fields && res.meta.fields.includes(c));
+          let ozone = 0, pm25 = 0, pm10 = 0;
+          if(pollCol){
+            rows.forEach(r=>{
+              const v = (r[pollCol]||'').toString().toLowerCase();
+              if(v.includes('ozone') || v.includes('o3')) ozone++;
+              if(v.includes('pm2') || v.includes('pm2.5') || v.includes('pm25')) pm25++;
+              if(v.includes('pm10')) pm10++;
+            });
+          }
+          document.getElementById('kpi-ozone').textContent = ozone || '0';
+          document.getElementById('kpi-pm25').textContent = pm25 || '0';
+          document.getElementById('kpi-pm10').textContent = pm10 || '0';
+        }catch(e){ /* safely ignore */ }
+      },
+      error:function(){ /* ignore errors — show defaults */ }
+    });
+  </script>
 </body>
 </html>

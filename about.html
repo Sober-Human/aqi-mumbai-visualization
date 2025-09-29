@@ -1,46 +1,49 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Mumbai AQI - About</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <title>About — AQI Mumbai</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <aside class="sidebar" id="sidebar">
-        <div class="logo">AQI Mumbai</div>
+  <header class="site-header">
+    <div class="container header-inner">
+      <h1 class="brand"><a href="index.html">AQI Mumbai</a></h1>
+      <nav class="main-nav">
         <a href="index.html" class="nav-link">Home</a>
         <a href="dashboard.html" class="nav-link">Dashboard</a>
+        <a href="findings.html" class="nav-link">Findings</a>
         <a href="about.html" class="nav-link active">About</a>
-    </aside>
+      </nav>
+    </div>
+  </header>
 
-    <button class="sidebar-toggle" id="sidebar-toggle">&#9776;</button>
+  <main class="container">
+    <section class="card">
+      <h2>About this project</h2>
+      <p>This student project analyzes daily AQI data for Mumbai for 2023–2025 using CPCB public data. The website shows interactive charts and summary findings. The final physical report contains full methodology and field notes.</p>
 
-    <main class="main-content" id="main-content">
-        <div class="container">
-            <h1>About the Project</h1>
-        
-            <h2>Problem Statement</h2>
-            <p></p>
-            
-            <h2>Methodology</h2>
-            <p></p>
-            
-            <h2>Data Sources</h2>
-            <p>The data for this project was sourced from the official Central Pollution Control Board (CPCB) of India. Data was collected for the years 2023, 2024, and 2025 for the city of Mumbai.</p>
-        </div>
-    </main>
-    
-    <script>
-        const toggleButton = document.getElementById('sidebar-toggle');
-        const sidebar = document.getElementById('sidebar');
-        const mainContent = document.getElementById('main-content');
+      <h3>Team (5 members)</h3>
+      <ol id="team-list">
+        <li>Safiya</li>
+        <li>Anushka</li>
+        <li>Mahi</li>
+        <li>Anas</li>
+        <li>Anand</li>
+      </ol>
 
-        toggleButton.addEventListener('click', () => {
-            sidebar.classList.toggle('sidebar-collapsed');
-            mainContent.classList.toggle('main-content-expanded');
-            toggleButton.classList.toggle('toggle-collapsed');
-        });
-    </script>
+      <h3>Files / Downloads</h3>
+      <ul>
+        <li><a href="images/" target="_blank">PNG charts (images/)</a></li>
+        <li><a href="data/cleaned_aqi.csv" download>Cleaned CSV (data/cleaned_aqi.csv)</a></li>
+        <li><a href="notebooks/visualization.ipynb" target="_blank">Notebook: visualization.ipynb</a></li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container"><small>Data source: CPCB. Created for Mumbai University field project.</small></div>
+  </footer>
 </body>
 </html>
